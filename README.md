@@ -34,3 +34,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+          px: 2,
+          py: 2,
+          borderBottom: "1px solid #eee",
+        }}
+      >
+        <Box
+          component="img"
+          src="/assets/logo.png"
+          alt="Smart Fusion"
+          sx={{ width: 40, height: 40 }}
+        />
+        <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+          Performance <br /> Management System
+        </Typography>
+      </Box>

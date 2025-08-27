@@ -1,95 +1,152 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  InputAdornment,
+  Alert,
+} from "@mui/material";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
+import FormTextField from "../components/TextFields/FormTextField";        
+import { setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+import {loginUser} from "../services/Users"
+
+
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+   const handleLogin = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      // ✅ Call wrapper function (uses axiosInstance + makeApiRequest)
+      const res = await loginUser({
+        email: email,
+        password: password,
+      });
+
+      if (res?.token) {
+        // ✅ Save token in cookie for 1 day
+        setCookie("token", res.token, { maxAge: 60 * 60 * 24 });
+
+        // ✅ Redirect to dashboard
+        router.push("/dashboard");
+      } else {
+        throw new Error(res?.message || "No token returned from server");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <Box sx={{ height: "100vh", display: "flex" }}>
+      {/* Left Panel */}
+      <Box
+        sx={{
+          width: "40%",
+          backgroundColor: "#073B4C",
+          color: "white",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+        }}
+      >
+        <Typography sx={{ fontSize: "32px", fontWeight: "800", mb: 2 }}>
+          Performance <br /> Management <br /> System
+        </Typography>
+        <Box
+          component="img"
+          src="/assets/smart-fusion-signin.png"
+          alt="Smart Fusion Logo"
+          sx={{ width: 200, height: 200 }}
         />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+      </Box>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      {/* Right Panel */}
+      <Box
+        sx={{
+          width: "60%",
+          backgroundColor: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h4" fontWeight="bold" gutterBottom>
+          Sign In
+        </Typography>
+
+        <Box width="100%" maxWidth={400}>
+          {error && <Alert severity="error">{error}</Alert>}
+
+          <FormTextField
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <EmailIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <FormTextField
+            type="password"
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <LockIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Box textAlign="right" mt={1} mb={2}>
+            <Typography variant="body2" sx={{ cursor: "pointer" }}>
+              Forgot Password?
+            </Typography>
+          </Box>
+
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={handleLogin}
+            disabled={loading}
+            sx={{
+              backgroundColor: "#073B4C",
+              color: "#fff",
+              py: 1.5,
+              fontWeight: "bold",
+              fontSize: "1rem",
+            }}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            {loading ? "Signing In..." : "Sign In"}
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
-}
+};
+
+export default Login;
