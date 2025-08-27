@@ -1,6 +1,6 @@
 import axiosInstance from "./axios";
 
-const ApiBaseUrl = "/api";  
+const ApiBaseUrl = "http://115.186.185.230:9090";
 
 const makeApiRequest = async (method, url, reqObject = {}) => {
   try {
