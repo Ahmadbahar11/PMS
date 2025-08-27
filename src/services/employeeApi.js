@@ -1,6 +1,6 @@
 import axiosInstance from "./axios";
 
-const ApiBaseUrl = "http://115.186.185.230:9090";
+const ApiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9090";
 
 const makeApiRequest = async (method, url, reqObject = {}) => {
   try {
